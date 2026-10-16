@@ -1,0 +1,4 @@
+# Local agent credentials/settings (none present yet, kept out defensively)
+.claude/settings.local.json
+.specify/extensions/*/local-config.yml
+.specify/feature.json
