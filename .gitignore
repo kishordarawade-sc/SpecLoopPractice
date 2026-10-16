@@ -2,3 +2,10 @@
 .claude/settings.local.json
 .specify/extensions/*/local-config.yml
 .specify/feature.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
