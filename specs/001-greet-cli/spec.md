@@ -1,6 +1,6 @@
 # Feature Specification: Greet CLI
 
-**Spec Version**: 1.0.0
+**Spec Version**: 1.1.0
 
 **Feature Branch**: `001-greet-cli`
 
@@ -28,6 +28,7 @@ that name.
    `Hello, Alice!`.
 2. **Given** the tool is installed, **When** the user runs `greet "Alice Smith"`, **Then** the
    output is `Hello, Alice Smith!`.
+3. **Given** the tool is installed, **When** the user runs `greet Alice --shout`, **Then** the output is `HELLO, ALICE!`
 
 ---
 
@@ -67,6 +68,7 @@ instead of an error.
 - **FR-004**: System MUST trim leading and trailing whitespace from the provided name before
   using it in the greeting.
 - **FR-005**: System MUST exit with status code 0 after printing the greeting.
+- **FR-006**: System MUST support an optional `--shout` flag; when present, the greeting is printed in all uppercase.
 
 ## Success Criteria *(mandatory)*
 
@@ -88,3 +90,9 @@ instead of an error.
 - A multi-word name is supplied as one shell argument (the user is responsible for quoting it).
 - Packaging/installation/distribution mechanics are out of scope for the spec and are decided in
   the implementation plan.
+
+## Change Log
+
+- **1.1.0** (2026-10-17): Added FR-006 (`--shout` flag). Reason: demo request for a louder/emphasized
+  greeting mode for presentations; purely additive, no existing behavior changes.
+- **1.0.0** (2026-10-16): Initial spec — named greeting (US1) and default greeting (US2).
