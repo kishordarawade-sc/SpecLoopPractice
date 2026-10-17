@@ -2,7 +2,11 @@ import argparse
 
 
 def build_greeting(name: str | None) -> str:
-    raise NotImplementedError
+    cleaned = (name or "").strip()
+    if not cleaned:
+        return "Hello, World!"
+    return f"Hello, {cleaned}!" 
+    
 
 
 def main() -> None:
