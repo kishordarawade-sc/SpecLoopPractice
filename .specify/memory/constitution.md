@@ -41,6 +41,10 @@ The Feature Loop for every feature is, in order: `/speckit-specify` -> (optional
 NOT be skipped backward (e.g. editing code during `/speckit-plan`), though later steps MAY send a
 feature back to an earlier one (e.g. `/speckit-tasks` revealing the spec was ambiguous).
 
+**Archiving**: once a feature is merged to `main` and no further iteration is planned, its entire
+`specs/<slug>/` directory MUST be moved to `specs/_archive/<slug>/` via `git mv` (preserving
+history), and the spec's `Status` field MUST be updated to `Archived`.
+
 ## Governance
 
 This constitution supersedes ad-hoc process decisions for this repo. Amendments are made via
@@ -49,4 +53,4 @@ a principle, MINOR for adding a principle or materially expanding guidance, PATC
 fixes. Every spec and plan produced by Spec Kit MUST be checked against this constitution before
 being approved; unjustified deviation MUST be rejected back to the author.
 
-**Version**: 1.0.0 | **Ratified**: 2026-10-16 | **Last Amended**: 2026-10-16
+**Version**: 1.1.0 | **Ratified**: 2026-10-16 | **Last Amended**: 2026-10-17
