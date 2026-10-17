@@ -6,7 +6,7 @@
 
 **Created**: 2026-10-16
 
-**Status**: Draft
+**Status**: Archived
 
 **Input**: User description: "Add a CLI command that greets a user by name"
 
