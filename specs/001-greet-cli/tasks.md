@@ -13,14 +13,14 @@ quickstart.md
 
 ## Phase 1: Setup
 
-- [ ] T001 Create `greet.py` at repo root: argparse CLI with one optional positional `name`
+- [X] T001 Create `greet.py` at repo root: argparse CLI with one optional positional `name`
       argument, calling `build_greeting(name)` and printing the result; `build_greeting` raises
       `NotImplementedError` for now.
-- [ ] T002 [P] Create `tests/test_greet.py` importing `build_greeting` from `greet.py`.
+- [X] T002 [P] Create `tests/test_greet.py` importing `build_greeting` from `greet.py`.
 
 ## Phase 2: Foundational
 
-- [ ] T003 Add a minimal `pytest.ini` (or `[tool:pytest]` section) at repo root so `pytest` from
+- [X] T003 Add a minimal `pytest.ini` (or `[tool:pytest]` section) at repo root so `pytest` from
       repo root discovers `tests/` without extra flags.
 
 **Checkpoint**: Project skeleton runs (`python greet.py` exits, tests are collectible) before any
@@ -36,16 +36,16 @@ story logic exists.
 
 ### Tests for User Story 1 ⚠️ write first, confirm they FAIL
 
-- [ ] T004 [P] [US1] Add `test_greet_with_name`: `build_greeting("Alice") == "Hello, Alice!"` in
+- [X] T004 [P] [US1] Add `test_greet_with_name`: `build_greeting("Alice") == "Hello, Alice!"` in
       `tests/test_greet.py`.
-- [ ] T005 [P] [US1] Add `test_greet_with_multiword_name`:
+- [X] T005 [P] [US1] Add `test_greet_with_multiword_name`:
       `build_greeting("Alice Smith") == "Hello, Alice Smith!"` in `tests/test_greet.py`.
-- [ ] T006 [P] [US1] Add `test_greet_trims_whitespace`:
+- [X] T006 [P] [US1] Add `test_greet_trims_whitespace`:
       `build_greeting("  Alice  ") == "Hello, Alice!"` in `tests/test_greet.py` (FR-004).
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implement `build_greeting(name)` in `greet.py`: strip whitespace; if the result
+- [X] T007 [US1] Implement `build_greeting(name)` in `greet.py`: strip whitespace; if the result
       is non-empty, return `f"Hello, {name}!"` (depends on T004-T006 existing and failing first).
 
 **Checkpoint**: User Story 1 fully functional and independently testable/demoable.
@@ -62,14 +62,14 @@ erroring.
 
 ### Tests for User Story 2 ⚠️ write first, confirm they FAIL
 
-- [ ] T008 [P] [US2] Add `test_greet_default`: `build_greeting(None) == "Hello, World!"` in
+- [X] T008 [P] [US2] Add `test_greet_default`: `build_greeting(None) == "Hello, World!"` in
       `tests/test_greet.py`.
-- [ ] T009 [P] [US2] Add `test_greet_whitespace_only_defaults`:
+- [X] T009 [P] [US2] Add `test_greet_whitespace_only_defaults`:
       `build_greeting("   ") == "Hello, World!"` in `tests/test_greet.py`.
 
 ### Implementation for User Story 2
 
-- [ ] T010 [US2] Extend `build_greeting(name)` in `greet.py` to return `"Hello, World!"` when
+- [X] T010 [US2] Extend `build_greeting(name)` in `greet.py` to return `"Hello, World!"` when
       `name` is `None` or blank after stripping (depends on T007, T008, T009).
 
 **Checkpoint**: Both user stories pass independently and together.
