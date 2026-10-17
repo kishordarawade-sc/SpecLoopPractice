@@ -78,11 +78,11 @@ erroring.
 
 ## Phase 5: Polish & Cross-Cutting Concerns
 
-- [ ] T011 Confirm `greet.py`'s `main()` exits with status code 0 after printing in all cases
+- [X] T011 Confirm `greet.py`'s `main()` exits with status code 0 after printing in all cases
       (FR-005).
-- [ ] T012 [P] Run `quickstart.md` validation manually: `python greet.py Alice` and
+- [X] T012 [P] Run `quickstart.md` validation manually: `python greet.py Alice` and
       `python greet.py` both produce the documented output.
-- [ ] T013 [P] Confirm `python greet.py --help` prints usage text (argparse default) without
+- [X] T013 [P] Confirm `python greet.py --help` prints usage text (argparse default) without
       error.
 
 ---
