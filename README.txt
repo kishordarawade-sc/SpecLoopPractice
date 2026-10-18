@@ -299,6 +299,39 @@ a different path: openspec/changes/<change-id>/ moves to
 openspec/changes/archive/<date>-<change-id>/ once its delta has been
 folded into the live spec and no further iteration is planned.
 
+4.6 The BREAKING change (config file format migration)
+-----------------------------------------------------------
+Ran a second change through the same OpenSpec structure, this time deliberately
+BREAKING: config's storage format moved from flat key=value to a single JSON
+object (change-id migrate-config-json-format). Kept spec-only this time (no
+code implementation) - the point was to practice the artifacts a breaking
+change needs that an additive one doesn't:
+
+  - delta spec.md used BOTH "## REMOVED Requirements" (old flat-format
+    requirement, named only - no need to restate its scenarios since it's
+    being retired) AND "## ADDED Requirements" (new JSON-format requirement,
+    full scenarios) in the same file. The additive Slack change only ever
+    needed ADDED.
+  - impact-map.md: traced config's downstream dependents (notification reads
+    channel settings, audit-log reads log_level) and explicitly noted a
+    capability that LOOKS related but isn't actually wired up (user-profile
+    mentions "default name" like config's Purpose does, but no requirement in
+    either spec actually connects them) - flagged as a pre-existing spec
+    inconsistency worth remembering for later (spec debt).
+  - migration-notes.md: a stakeholder-facing doc with a deprecation timeline
+    (deprecation window, then removal) and concrete migration steps - this
+    has no equivalent artifact in the additive change at all, because nobody
+    needs migration instructions for a change that breaks nothing.
+  - openspec/semver-decisions.md: a single log (not per-change) covering BOTH
+    changes made in this module - Slack = MINOR (1.0.0 -> 1.1.0, purely
+    additive), config format = MAJOR (1.0.0 -> 2.0.0, a requirement was
+    REMOVED, not just extended).
+
+Fold-in looked different too: the additive change's fold-in only APPENDED a
+new requirement to notification/spec.md. This one REPLACED the old
+"Flat key-value file format" requirement with "Structured JSON file format" -
+proof that OpenSpec's delta mechanism handles replacement, not just addition.
+
 ------------------------------------------------------------------------
 5. OPENSPEC MODULE - ISSUES FACED AND HOW WE OVERCAME THEM
 ------------------------------------------------------------------------
@@ -354,6 +387,23 @@ folded into the live spec and no further iteration is planned.
   confirm the ACTUAL diff matched the CLAIMED step, before moving to the
   next one.
 
+- The breaking config change's tasks.md hit the EMPTY-COMMIT bug a third
+  time (0 insertions(+), 0 deletions(-), no rename involved - so not the
+  benign case). It was also toggled/committed inconsistently across two
+  separate commits (checkboxes appeared checked, then the same commit's
+  diff showed them going from unchecked to checked again), suggesting a
+  stale on-disk copy was edited and saved on top of an already-committed
+  version.
+  Fix: same as before - git show --stat on the suspicious commit, Read the
+  current file, and re-commit once the live file content matched reality.
+
+- A standing, cross-change artifact (semver-decisions.md, meant to live at
+  the top-level openspec/ folder because it logs decisions for ALL changes,
+  not just one) was first created INSIDE the single change's own folder.
+  Fix: Move-Item to the correct top-level path (not git mv, since the file
+  was still untracked at that point), then git add + commit from the right
+  location.
+
 ------------------------------------------------------------------------
 6. OPENSPEC MODULE - KEY TAKEAWAY (SO FAR)
 ------------------------------------------------------------------------
@@ -366,6 +416,6 @@ defines semver or archiving policy for you - in both cases that discipline
 has to be invented and written down by the team using the tool, not
 assumed from the tool's existence.
 
-Still pending in this module: the BREAKING change (config file format
-migration), its impact map, a stakeholder migration note, and a semver
-decision log covering both changes.
+Both OpenSpec changes practiced in this module (the additive Slack change and
+the breaking config format change, see 4.6) are now complete: specified,
+folded into their live capability specs, and archived.
