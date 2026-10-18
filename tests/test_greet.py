@@ -19,4 +19,12 @@ def test_greet_default():
 def test_greet_whitespace_only_defaults():
     assert build_greeting("   ") == "Hello, World!" 
 
-    
+from greet import notify
+
+
+def test_notify_posts_when_webhook_configured():
+    assert notify("Hello, Alice!", "https://hooks.slack.test/abc123") is True
+
+
+def test_notify_skips_when_no_webhook():
+    assert notify("Hello, World!", None) is False
