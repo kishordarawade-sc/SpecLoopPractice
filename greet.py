@@ -6,6 +6,19 @@ def build_greeting(name: str | None) -> str:
     if not cleaned:
         return "Hello, World!"
     return f"Hello, {cleaned}!" 
+
+
+def send_slack(webhook_url: str, message: str) -> bool:
+    if not webhook_url:
+        return False
+    # Simulate sending a message to Slack
+    return True 
+
+def notify(message: str, webhook_url: str | None) -> bool:
+    if not webhook_url:
+        return False
+    return send_slack(webhook_url, message) 
+
     
 
 
