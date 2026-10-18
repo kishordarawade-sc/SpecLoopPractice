@@ -28,3 +28,5 @@ def test_notify_posts_when_webhook_configured():
 
 def test_notify_skips_when_no_webhook():
     assert notify("Hello, World!", None) is False
+
+
