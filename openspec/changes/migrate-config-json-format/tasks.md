@@ -5,7 +5,7 @@
 - [X] T003: Write delta spec.md (REMOVED flat format, ADDED JSON format)
 - [X] T004: Write impact-map.md (upstream/downstream dependency diagram)
 - [X] T005: Write migration-notes.md (stakeholder deprecation/migration doc)
-- [ ] T006: Record semver decision in openspec/semver-decisions.md (MAJOR bump)
+- [X] T006: Record semver decision in openspec/semver-decisions.md (MAJOR bump)
 
 Note: unlike add-slack-notification's tasks.md, there is no test/implementation task
 pair here — this change is spec-only by design (see design.md "Scope of this change").
