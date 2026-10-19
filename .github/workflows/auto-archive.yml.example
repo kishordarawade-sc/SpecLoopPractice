@@ -1,0 +1,58 @@
+name: Auto Archive Spec (SIMULATED - inert, not a real workflow)
+#
+# This file uses .yml.example, not .yml, so GitHub Actions does NOT pick
+# it up. It documents how an auto-archive-on-merge stage COULD be wired:
+# on every push to main, find any spec already marked Status: Archived
+# that still lives under specs/ instead of specs/_archive/, move it, and
+# push that move back to main as a bot commit - no human running git mv.
+#
+# Deliberately left inert: a job that commits and pushes to main on its
+# own is a meaningfully bigger blast radius than a read-only check (lint,
+# validate, coverage), and was never given an explicit go-ahead to run
+# for real against this repo. To activate it for real: rename this file
+# to auto-archive.yml, and remove the "if: false" guard below.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  auto-archive:
+    if: false   # remove this line to actually enable the job
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Report archive candidates
+        run: python scripts/find_archivable_specs.py
+
+      - name: Move archivable specs
+        run: |
+          for dir in specs/*/; do
+            slug=$(basename "$dir")
+            if grep -q '\*\*Status\*\*: Archived' "$dir/spec.md" 2>/dev/null; then
+              mkdir -p specs/_archive
+              git mv "specs/$slug" "specs/_archive/$slug"
+            fi
+          done
+
+      - name: Commit and push the archive move
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --cached --quiet || ! git diff --quiet; then
+            git add -A
+            git commit -m "chore(archive): auto-archive spec(s) on merge [skip ci]"
+            git push
+          else
+            echo "Nothing to archive."
+          fi

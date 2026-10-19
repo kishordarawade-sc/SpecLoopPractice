@@ -419,3 +419,233 @@ assumed from the tool's existence.
 Both OpenSpec changes practiced in this module (the additive Slack change and
 the breaking config format change, see 4.6) are now complete: specified,
 folded into their live capability specs, and archived.
+
+------------------------------------------------------------------------
+7. CI INTEGRATION + AI-DRAFTED SPEC MODULE (Module 4)
+------------------------------------------------------------------------
+Same repo, new focus: making the spec conventions MACHINE-ENFORCED instead
+of just hand-followed, and practicing AI-assisted spec drafting with a
+mandatory critical-review step.
+
+7.1 Structural spec lint, enforced in CI
+---------------------------------------------
+Wrote scripts/spec_lint.py: checks every specs/**/spec.md (including
+archived ones) for the structural conventions this repo had only
+informally followed so far - a **Status** field and a Change Log section.
+Wired it into .github/workflows/spec-lint.yml, triggered on every pull
+request into main, so a spec missing these fields fails CI before it can
+be merged, not just at review time.
+
+7.2 AI-drafted spec, then critical review (003-greet-log)
+----------------------------------------------------------------
+Had Claude draft specs/003-greet-log/spec.md from a one-line prompt
+("log every greeting to a file with a timestamp"), matching the existing
+spec.md format. Ran the lint against it immediately: FAIL (missing Status
+field and Change Log section) - the lint tool doing exactly its job on a
+fresh AI draft.
+Then wrote specs/003-greet-log/ai-review-notes.md as a SEPARATE critical-
+review step, documenting not just the lint-caught structural gaps but
+content-quality gaps lint cannot catch: an inconsistent SHOULD requirement
+(should be MUST), an unspecified timestamp format, an unmeasurable success
+criterion, and missing edge cases (unwritable log path, concurrent writes,
+unbounded log growth). Applied all of these fixes directly to the spec,
+re-ran the lint: PASS. The key lesson: a passing lint only proves the
+SHAPE is right, not that the content is unambiguous - that still needs a
+human (or a deliberate separate review pass) reading it critically.
+
+7.3 Real TDD cycle tied to the spec's own acceptance scenario
+--------------------------------------------------------------------
+Took the fixed spec's one GIVEN-WHEN-THEN scenario literally as the test to
+write: wrote test_log_greeting_appends_timestamped_line with no
+implementation behind it, ran pytest, confirmed RED (ImportError: cannot
+import name 'log_greeting' - the right kind of failure). Implemented
+log_greeting() in greet.py, reran pytest, confirmed GREEN (9/9 passed).
+Committed test + implementation together.
+
+7.4 A real pull request, not a simulated one
+--------------------------------------------------
+Pushed main (it had drifted 33 commits ahead of origin/main, since earlier
+module work was only ever committed locally - had to push that first),
+then pushed the feature branch and opened PR #1 against main through the
+GitHub web UI (no gh CLI installed). Watched GitHub Actions actually run
+spec-lint.yml on the real PR: "spec-lint succeeded in 7s". Squash-merged
+into main. This was the first time in the whole project that CI ran
+somewhere other than a local terminal.
+
+7.5 workflow-log.md: narrating the whole loop end to end
+----------------------------------------------------------------
+Wrote workflow-log.md at the repo root, tracing this entire module's pass
+through specify -> CI lint (red) -> critical review -> plan/revise -> CI
+lint (green) -> task/implement/test -> push + real CI run -> archive, with
+the actual commit hashes and CI result as evidence for each stage (see
+workflow-log.md for the full table).
+
+------------------------------------------------------------------------
+8. MODULE 4 - ISSUES FACED AND HOW WE OVERCAME THEM
+------------------------------------------------------------------------
+
+- A pytest run right after adding the new log_greeting test showed only
+  the original 8 tests passing, no error, no mention of the 9th test at
+  all - the test FILE hadn't actually been saved to disk yet when pytest
+  ran (an editor/save-race, the same family of bug as the earlier
+  empty-commit issue, just hitting a test run instead of a commit).
+  Fix: re-read the file to confirm its real on-disk content, then reran
+  pytest - this time it correctly showed the true RED state
+  (ImportError), proving the first "pass" was never real.
+
+- `gh pr create` failed with CommandNotFoundException - the GitHub CLI
+  wasn't installed.
+  Fix: opened the pull request manually through the GitHub web UI instead.
+
+- The repo's own "Approve" button was disabled on the PR.
+  Not a bug: GitHub does not allow a PR's author to approve their own PR -
+  a platform rule, not something broken in this repo's setup.
+
+- Local main had drifted 33 commits ahead of origin/main (all of an
+  earlier module's work had only ever been committed, never pushed).
+  Fix: pushed main first, THEN pushed the feature branch and opened the
+  PR, so the PR only showed this module's actual diff instead of the
+  entire unpushed backlog.
+
+- workflow-log.md was committed twice in a row at only ~20 lines, cut off
+  mid-sentence, even though the full intended content was much longer.
+  Root cause: the message delivering the file's content wrapped the WHOLE
+  thing in one outer ```markdown fence, but the content itself contained
+  two INNER ``` fenced examples - a renderer/clipboard closed the outer
+  fence at the first inner one, silently truncating everything after it.
+  Confirmed by noticing the cutoff landed at the exact same line both
+  times.
+  Fix: delivered the file content via a PowerShell here-string
+  (@'...'@ | Set-Content -Encoding utf8 workflow-log.md) with indented
+  (not fenced) code examples instead, which has no inner ``` markers to
+  collide with an outer one. Verified the full line count before
+  committing.
+
+------------------------------------------------------------------------
+9. MODULE 4 - KEY TAKEAWAY
+------------------------------------------------------------------------
+Turning a written convention (Status field, Change Log section) into a
+LINTED, CI-enforced rule is what actually makes it stick across an entire
+team or a long project - a convention that only lives in a human's memory
+gets forgotten the moment attention moves elsewhere. Equally important:
+an AI-drafted spec still needs a deliberate, separate critical-review pass
+- lint catches missing STRUCTURE, but only a human (or a dedicated review
+step) catches missing or ambiguous CONTENT, and those are different kinds
+of gaps that need different kinds of checks.
+
+------------------------------------------------------------------------
+10. ADVANCED CI / OPENSPEC CLI / TRACEABILITY MODULE (Module 5 - IN PROGRESS)
+------------------------------------------------------------------------
+Same repo, scaling up the CI integration from Module 4: a real OpenSpec
+CLI in the pipeline (not a hand-simulated one), a spec-to-test coverage
+gate, and AI-generated test stubs at scale across multiple specs.
+
+10.1 Installing the REAL OpenSpec CLI (not a namesquat)
+----------------------------------------------------------------
+Before adding any package as a dependency, verified it directly against
+the npm and PyPI registries rather than trusting the name alone: plain
+"openspec" on both npm and PyPI turned out to be unrelated placeholder /
+hardware-parts-API packages (a namesquat risk), while @fission-ai/openspec
+(v1.14.3, github.com/Fission-AI/OpenSpec - the same tool already used in
+Module 2) was confirmed as the real CLI. Installed it as a devDependency
+via `npm.cmd install --save-dev @fission-ai/openspec`.
+
+10.2 Confirming the CLI recognizes existing OpenSpec work
+----------------------------------------------------------------
+Ran `npx.cmd openspec validate --all --no-interactive` against the
+openspec/ folder built back in Module 2's brownfield exercise, with no
+`openspec init` needed first: all 5 existing capability specs (audit-log,
+config, greeting, notification, user-profile) validated cleanly -
+"Totals: 5 passed, 0 failed (5 items)". Confirms the real CLI reads this
+project's existing structure correctly, not just a freshly scaffolded one.
+
+10.3 A spec-to-test traceability convention, enforced by a coverage gate
+------------------------------------------------------------------------------
+Invented a lightweight, two-sided linking convention (neither Spec Kit nor
+OpenSpec prescribe one):
+  - each GIVEN-WHEN-THEN acceptance scenario in a spec.md gets an inline
+    HTML anchor right before its **Given**, e.g.
+    <a id="US1-S1"></a>**Given** ... (invisible when the spec renders, but
+    a real clickable GitHub anchor link).
+  - each test covering that scenario carries a comment directly above it:
+    # spec: specs/<slug>/spec.md#US1-S1
+Wrote scripts/spec_test_coverage.py to parse both sides, compute the
+percentage of scenarios with a matching test-side comment, and gate at an
+80% threshold (FAIL below it). Confirmed the gate: 002-farewell-cli (no
+tests yet) and 003-greet-log (1 scenario, already tested) together
+produced exactly 1/3 scenarios linked (33.3%) -> FAIL, as expected before
+any stubs existed for 002.
+
+10.4 AI-generated test stubs for every scenario, logged
+----------------------------------------------------------------
+Used Claude to generate pytest stubs directly from each spec's GWT
+scenarios, one scenario at a time (not the whole spec in one shot), using
+@pytest.mark.skip plus a deferred (in-body) import so a not-yet-written
+function doesn't crash collection of the whole test file. Generated two
+stubs for 002-farewell-cli's two scenarios; 003-greet-log's one scenario
+already had a real passing test from Module 4, so it was documented as
+"already implemented" in the log rather than being re-stubbed. Logged the
+exact prompt pattern and generated output in
+specs/test-stub-generation-log.md. Afterwards the coverage gate reported
+3/3 scenarios linked (100.0%) -> PASS, since the gate only checks for the
+linking comment, not whether the test passes or is skipped.
+
+10.5 Expanding CI to three parallel gates (a fourth still pending)
+------------------------------------------------------------------------
+Expanded .github/workflows/spec-lint.yml (renamed in display only to
+"Spec CI") from one job to three, all triggered on every PR into main and
+running in parallel: spec-lint (Module 4's structural check),
+openspec-validate (`npx openspec validate --all --strict --no-interactive`,
+via a Node setup + `npm ci` step), and coverage-gate (this module's 80%
+threshold script). A fourth stage - auto-archiving a spec's folder
+automatically on merge - is deliberately NOT yet wired in: it would mean a
+CI job pushing commits back to main on its own, which needs an explicit,
+separate go-ahead before being automated (same standing caution as any
+other hard-to-reverse, repo-wide action in this project).
+
+------------------------------------------------------------------------
+11. MODULE 5 - ISSUES FACED SO FAR (module still in progress)
+------------------------------------------------------------------------
+
+- `npm init` / `npx` failed under PowerShell with "npm.ps1 cannot be
+  loaded ... is not digitally signed ... UnauthorizedAccess" - npm/npx
+  resolve to .ps1 wrapper scripts blocked by the shell's execution policy.
+  Fix: called npm.cmd / npx.cmd directly instead, bypassing the blocked
+  wrapper with zero system or global policy changes - a narrower fix than
+  touching Set-ExecutionPolicy.
+
+- The coverage script reported "0/0 scenarios linked (100.0%) - PASS" on
+  its first real run, instead of the expected 1/3 (33%) FAIL. Root cause:
+  the HTML anchor edits meant to be added to both gated spec.md files
+  hadn't actually been saved on disk yet at the time the script ran - one
+  spec had no anchors applied at all, the other's edit had only been
+  applied AFTER that run, not before.
+  Fix: independently re-read both spec files' actual on-disk content
+  before trusting the reported "done", found the missing anchor, had it
+  applied, and reran - this time getting the correct 1/3 (33.3%) FAIL.
+  This also surfaced a latent design gap in the script itself: treating
+  total == 0 as "100% PASS" silently hides the case where NO scenarios
+  were instrumented at all, rather than distinguishing that from genuine
+  full coverage - noted as a known rough edge, not yet fixed.
+
+- A file meant to hold a rendered markdown log (test-stub-generation-log.md)
+  instead ended up containing the LITERAL PowerShell here-string command
+  text (the `@'` ... `'@ | Set-Content ...` wrapper) as its actual file
+  content - the command block had been pasted into an editor as file
+  content instead of being run in the terminal.
+  Fix: wrote the file's real content directly instead of relying on a
+  copy-pasted terminal command, then had the coverage/pytest run confirm
+  the file was now real, readable markdown.
+
+------------------------------------------------------------------------
+12. MODULE 5 - KEY TAKEAWAY (SO FAR)
+------------------------------------------------------------------------
+Scaling a convention from "one spec, checked by hand" (Module 4) to "every
+gated spec, checked by a script in CI" (Module 5) surfaces failure modes
+that don't show up at small scale: a silent "0 instrumented == 100%
+covered" edge case, and a save/paste step that silently produces the wrong
+artifact (command text instead of its output) are both the kind of bug
+that is invisible until something downstream (a coverage number, a file
+read) is checked independently rather than trusted at face value. The
+project's running discipline - verify the actual file/commit state before
+advancing, not just the claim that a step was done - caught both.

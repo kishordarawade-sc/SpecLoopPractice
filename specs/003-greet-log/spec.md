@@ -8,6 +8,8 @@
 
 **Status**: Specified
 
+**Tracked by**: #5
+
 **Input**: User description: "Log every greeting to a file with a timestamp"
 
 ## User Scenarios & Testing *(mandatory)*

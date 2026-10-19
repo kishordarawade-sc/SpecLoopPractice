@@ -8,6 +8,8 @@
 
 **Status**: Archived
 
+**Tracked by**: #3
+
 **Input**: User description: "Add a CLI command that greets a user by name"
 
 ## User Scenarios & Testing *(mandatory)*
