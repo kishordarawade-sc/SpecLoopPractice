@@ -1,4 +1,4 @@
-name: Spec Lint
+name: Spec CI
 
 on:
   pull_request:
@@ -14,3 +14,24 @@ jobs:
           python-version: "3.12"
       - name: Run spec compliance check
         run: python scripts/spec_lint.py
+
+  openspec-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - name: Validate OpenSpec changes
+        run: npx openspec validate --all --strict --no-interactive
+
+  coverage-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check spec-test coverage
+        run: python scripts/spec_test_coverage.py
