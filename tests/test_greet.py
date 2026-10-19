@@ -42,4 +42,20 @@ def test_log_greeting_appends_timestamped_line(tmp_path):
     assert len(lines) == 1
     assert re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z Hello, Alice!$", lines[0])
 
+import pytest
+
+
+# spec: specs/002-farewell-cli/spec.md#US1-S1
+@pytest.mark.skip(reason="stub: farewell() not implemented yet")
+def test_farewell_with_name():
+    from greet import farewell
+    assert farewell("Alice") == "Goodbye, Alice!"
+
+
+# spec: specs/002-farewell-cli/spec.md#US2-S1
+@pytest.mark.skip(reason="stub: farewell() not implemented yet")
+def test_farewell_without_name():
+    from greet import farewell
+    assert farewell(None) == "Goodbye, World!"
+
 
