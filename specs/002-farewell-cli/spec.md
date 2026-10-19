@@ -22,8 +22,7 @@ A user runs the tool with their name and sees a personalized farewell printed ba
 
 **Acceptance Scenarios**:
 
-1. **Given** the tool is installed, **When** the user runs `farewell Alice`, **Then** the output is `Goodbye, Alice!`.
-
+1. <a id="US1-S1"></a>**Given** the tool is installed, **When** a greeting is generated, **Then** a log entry is appended in the form `<ISO-8601 UTC timestamp> <greeting text>`.
 ---
 
 ### User Story 2 - Say goodbye with no name provided (Priority: P2)
@@ -36,7 +35,7 @@ A user runs the tool without any argument and still gets a friendly, generic far
 
 **Acceptance Scenarios**:
 
-1. **Given** the tool is installed, **When** the user runs `farewell` with no argument, **Then** the output is `Goodbye, World!`.
+1. <a id="US2-S1"></a>**Given** the tool is installed, **When** the user runs `farewell` with no argument, **Then** the output is `Goodbye, World!`.
 
 ---
 

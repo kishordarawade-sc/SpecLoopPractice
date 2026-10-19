@@ -33,6 +33,7 @@ def test_notify_skips_when_no_webhook():
     assert notify("Hello, World!", None) is False
 
 
+# spec: specs/003-greet-log/spec.md#US1-S1
 def test_log_greeting_appends_timestamped_line(tmp_path):
     log_path = tmp_path / "greetings.log"
     log_greeting("Hello, Alice!", log_path)
