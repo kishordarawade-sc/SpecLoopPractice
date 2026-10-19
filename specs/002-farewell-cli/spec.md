@@ -8,6 +8,8 @@
 
 **Status**: Specified
 
+**Tracked by**: #4
+
 **Input**: User description: "Add a CLI command that says goodbye to a user by name"
 
 ## User Scenarios & Testing *(mandatory)*
