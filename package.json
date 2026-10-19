@@ -1,0 +1,27 @@
+{
+  "name": "speclooppractice",
+  "version": "1.0.0",
+  "description": "A practice repo for the spec-driven \"Feature Loop\": Spec Kit's specify -> plan -> tasks -> implement cycle, plus spec versioning, change management, delta review, and archiving on top of it.",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kishordarawade-sc/SpecLoopPractice.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kishordarawade-sc/SpecLoopPractice/issues"
+  },
+  "homepage": "https://github.com/kishordarawade-sc/SpecLoopPractice#readme",
+  "devDependencies": {
+    "@fission-ai/openspec": "^1.14.3"
+  }
+}
