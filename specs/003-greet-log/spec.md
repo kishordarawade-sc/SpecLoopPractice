@@ -22,7 +22,7 @@ Every time a greeting is generated, an entry is written to a log file so there's
 
 **Acceptance Scenarios**:
 
-1. **Given** the tool is installed, **When** a greeting is generated, **Then** a log entry is appended in the form `<ISO-8601 UTC timestamp> <greeting text>`.
+1. <a id="US1-S1"></a>**Given** the tool is installed, **When** a greeting is generated, **Then** a log entry is appended in the form `<ISO-8601 UTC timestamp> <greeting text>`.
 
 ### Edge Cases
 
