@@ -1,4 +1,14 @@
 import argparse
+from datetime import datetime,timezone
+from pathlib import Path
+
+
+
+def log_greeting(greeting: str, log_path: Path) -> None:
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(f"{timestamp} {greeting}\n")  
 
 
 def build_greeting(name: str | None) -> str:
